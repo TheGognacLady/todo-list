@@ -80,4 +80,40 @@ describe("handleError", () => {
       expect(dispatch).not.toHaveBeenCalled()
     },
   )
+
+  it.each<FetchBaseQueryError>([
+    { status: 403, data: null },
+    { status: "PARSING_ERROR", originalStatus: 403, data: "Forbidden", error: "Invalid JSON" },
+  ])("explains a known domain restriction even when a 403 body is not JSON: $status", (error) => {
+    handleError(api, {
+      error,
+      meta: {
+        request: new Request("https://app.example/api/1.1/todo-lists"),
+        response: new Response(null, {
+          status: 403,
+          headers: { reason: "In account settings you should setup domain" },
+        }),
+      },
+    })
+    expectError("Access denied: this website is not authorized to use the service. Please contact the app owner.")
+  })
+
+  it("uses a neutral 403 message when response metadata is missing", () => {
+    handleError(api, { error: { status: 403, data: null } })
+    expectError("Access denied. You do not have permission to perform this action.")
+  })
+
+  it.each([undefined, "", "Internal diagnostic: private-token-example"])(
+    "does not expose unknown or absent reason headers: %s",
+    (reason) => {
+      handleError(api, {
+        error: { status: 403, data: null },
+        meta: {
+          request: new Request("https://app.example/api/1.1/todo-lists"),
+          response: new Response(null, { status: 403, headers: reason ? { reason } : {} }),
+        },
+      })
+      expectError("Access denied. You do not have permission to perform this action.")
+    },
+  )
 })

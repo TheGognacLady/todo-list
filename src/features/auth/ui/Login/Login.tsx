@@ -78,7 +78,7 @@ export const Login = () => {
               type="password"
               label="Password"
               margin="normal"
-              error={!!errors.email}
+              error={!!errors.password}
               {...register("password")}
             />
             {errors.password && <span className={styles.errorMessage}>{errors.password.message}</span>}

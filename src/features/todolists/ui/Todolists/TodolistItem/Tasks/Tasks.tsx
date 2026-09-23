@@ -14,18 +14,6 @@ export const Tasks = ({ todolist }: Props) => {
 
   const { data, isLoading } = useGetTasksQuery(id)
 
-  // const dispatch = useAppDispatch()
-
-  // useEffect(() => {
-  //   if(!error) return
-  //   if('status' in error) {
-  //     const errMsg = 'error' in error ? error.error : JSON.stringify(error.data)
-  //     dispatch(setAppErrorAC({error: errMsg}))
-  //   } else {
-  //     dispatch(setAppErrorAC({error: error.message || 'Some error occurred'}))
-  //   }
-  // }, [error])
-
   if (isLoading) {
     return <TasksSkeleton />
   }
