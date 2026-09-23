@@ -1,4 +1,4 @@
-﻿# IT-INCUBATOR Todolist
+# IT-INCUBATOR Todolist
 
 Учебное приложение для управления списками задач, разработанное в рамках IT-INCUBATOR. Данные хранятся на сервере SamuraiJS API.
 
@@ -29,7 +29,6 @@ React 19, TypeScript, Vite 7, Redux Toolkit и RTK Query, Material UI, React Hoo
 
    ```dotenv
    VITE_API_KEY=your_api_key_here
-   VITE_BASE_URL=https://social-network.samuraijs.com/api/1.1/
    ```
 
    Замените `your_api_key_here` своим API-ключом SamuraiJS. Для работы с сервисом требуется аккаунт и API-ключ. Ссылка на сервис для регистрации есть на экране входа. Пример выше содержит заглушку, а не рабочий ключ.
@@ -54,9 +53,20 @@ pnpm exec vite --port 3001
 
 ## Подключение к API
 
-В режиме разработки запросы идут на `/api/1.1/` через Vite proxy. Адрес сервера задан в `vite.config.ts`; `VITE_BASE_URL` в этом режиме не используется.
+Frontend всегда обращается к относительному `/api/1.1/`. Локально запросы обрабатывает существующий Vite proxy, а на Vercel — серверная функция `api/proxy.js`, подключённая через rewrite в `vercel.json`. Оба прокси не передают Origin и Referer в SamuraiJS. `VITE_BASE_URL` больше не используется.
 
-В production-сборке адрес API берётся из `VITE_BASE_URL`. Переменные окружения нужно задать до сборки. Локальный proxy не входит в собранное приложение: при размещении сайта необходимо учитывать правила CORS и проверку домена на стороне API.
+## Деплой на Vercel
+
+1. Импортируйте GitHub-репозиторий в Vercel, выберите корень проекта и preset **Vite**.
+2. Используйте Node.js 22.x, установку `pnpm install --frozen-lockfile`, сборку `pnpm build` и каталог результата `dist` (команды также заданы в `vercel.json`).
+3. Добавьте существующий `VITE_API_KEY` в Environment Variables Vercel для Production и нужных Preview-окружений. Не добавляйте значение в репозиторий. После изменения переменной выполните новый деплой.
+4. После деплоя проверьте вход и операции с задачами. Во вкладке Network запросы должны идти на `/api/1.1/...` вашего домена Vercel. При 403 проверьте также response header `reason`.
+
+Приложение размещается в корне домена. `HashRouter` сохранён: страница входа имеет адрес `/#/login`, дополнительный SPA rewrite не нужен. API rewrite не должен заменяться перенаправлением на `index.html`.
+
+`pnpm preview` позволяет просмотреть сборку, но не запускает Vercel Functions. Для локальной работы с API используйте `pnpm dev`; production-прокси проверяйте в Vercel Preview Deployment.
+
+Автоматический запуск старого GitHub Pages workflow при push отключён. GitHub Pages не поддерживает эту серверную функцию; оставшийся ручной workflow не предназначен для нового варианта приложения.
 
 ## Команды
 

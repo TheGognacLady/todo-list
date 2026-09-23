@@ -8,7 +8,7 @@ export const baseApi = createApi({
 
   baseQuery: async (args, api, extraOptions) => {
     const result = await fetchBaseQuery({
-      baseUrl: import.meta.env.DEV ? "/api/1.1/" : import.meta.env.VITE_BASE_URL,
+      baseUrl: "/api/1.1/",
       headers: {
         "API-KEY": import.meta.env.VITE_API_KEY,
       },

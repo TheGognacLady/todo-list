@@ -36,11 +36,13 @@ export const handleError = (
         break
     }
     api.dispatch(setAppErrorAC({ error }))
+    return
   }
 
-  if ((result.data as { resultCode: ResultCode }).resultCode === ResultCode.Error) {
-    const messages = (result.data as { messages: string[] }).messages
-    error = messages.length ? messages[0] : error
+  const data = result.data
+  if (data && typeof data === "object" && "resultCode" in data && data.resultCode === ResultCode.Error) {
+    const messages = "messages" in data ? data.messages : undefined
+    error = Array.isArray(messages) && typeof messages[0] === "string" ? messages[0] : error
     api.dispatch(setAppErrorAC({ error }))
   }
 }

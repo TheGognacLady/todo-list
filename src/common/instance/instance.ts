@@ -2,7 +2,7 @@ import { AUTH_TOKEN } from "@/common/constants"
 import axios from "axios"
 
 export const instance = axios.create({
-  baseURL: import.meta.env.DEV ? "/api/1.1/" : import.meta.env.VITE_BASE_URL,
+  baseURL: "/api/1.1/",
   headers: {
     "API-KEY": import.meta.env.VITE_API_KEY,
   },
