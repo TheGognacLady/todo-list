@@ -1,6 +1,6 @@
 import { TaskStatus } from "@/common/enums"
 import { useGetTasksQuery } from "@/features/todolists/api/tasksApi"
-import type { DomainTodolist } from "@/features/todolists/model/todolists-slice"
+import type { DomainTodolist } from "@/features/todolists/lib/types"
 import List from "@mui/material/List"
 import { TaskItem } from "./TaskItem/TaskItem"
 import { TasksSkeleton } from "./TasksSkeleton/TasksSkeleton"
